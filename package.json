@@ -1,0 +1,12 @@
+{
+  "name": "unsplash-scraper",
+  "description": "Easily grab images from unsplash.com",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "cheerio": "0.13.x",
+    "request": "0.33",
+    "datejs": "1.0.x",
+    "node-fs": "0.1.x"
+  }
+}

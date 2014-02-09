@@ -1,0 +1,41 @@
+var url = 'http://www.unsplash.com/',
+    cheerio = require('cheerio'),
+    request = require('request'),
+    fs = require('fs'),
+    date = require('datejs'),
+    nodefs = require('node-fs'),
+    imageURLs = [],
+    images = 'images/' + Date.today().getFullYear() +
+    '/' + Date.today().getWeek() + '/';
+
+function createDirectory(path) {
+  nodefs.mkdirSync(path,0777,true,function(err) {
+    if (err) return console.error(err);
+  });
+}
+
+
+function getHTML(err, resp, html) {
+  if (err) return console.error(err);
+  var parsed_html = cheerio.load(html);
+
+  parsed_html('img').map(function(i, link) {
+    var src = cheerio(link).attr('src');
+    if (!src.match('.jpg')) return
+    imageURLs.push(src);
+  });
+  downloadImages();
+}
+
+function downloadImages() {
+  createDirectory(images);
+  for (url in imageURLs) {
+    request(imageURLs[url])
+    .pipe(fs.createWriteStream(__dirname + '/' + images + '/' + url + '.jpg'))
+    .on('close', function(){
+      console.log('Image Downloaded');
+    });
+  }
+}
+
+request(url, getHTML);
